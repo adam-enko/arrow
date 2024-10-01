@@ -1,5 +1,3 @@
-@file:Suppress("DSL_SCOPE_VIOLATION")
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
@@ -10,6 +8,7 @@ plugins {
   alias(libs.plugins.publish)
   alias(libs.plugins.kotlinx.kover)
   alias(libs.plugins.spotless)
+  `dokka-convention`
 }
 
 spotless {

@@ -1,5 +1,3 @@
-@file:Suppress("DSL_SCOPE_VIOLATION")
-
 import kotlinx.knit.KnitPluginExtension
 import kotlinx.validation.ExperimentalBCVApi
 import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
@@ -15,34 +13,40 @@ allprojects {
   }
 }
 
-buildscript {
-  repositories {
-    mavenCentral()
-    google()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-  }
+//buildscript {
+//  repositories {
+//    mavenCentral()
+//    google()
+//    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+//    maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev")
+//  }
+//
+//  dependencies {
+//    classpath(libs.kotlinx.knit)
+//  }
+//}
 
-  dependencies {
-    classpath(libs.kotlinx.knit)
-  }
-}
+//allprojects {
+//  repositories {
+//    mavenCentral()
+//    (project.rootProject.properties["kotlin_repo_url"] as? String)?.also { maven(it) }
+//    google()
+//    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+//    maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev")
+//  }
+//}
 
 allprojects {
-  repositories {
-    mavenCentral()
-    (project.rootProject.properties["kotlin_repo_url"] as? String)?.also { maven(it) }
-    google()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-  }
+  group = property("projects.group").toString()
 }
 
 plugins {
   base
   alias(libs.plugins.android.library) apply false
-  alias(libs.plugins.dokka)
+  `dokka-convention`
   alias(libs.plugins.animalSniffer) apply false
   alias(libs.plugins.kotlinx.kover)
-  alias(libs.plugins.kotlin.multiplatform) apply false
+//  alias(libs.plugins.kotlin.multiplatform) apply false
   alias(libs.plugins.kotlinx.serialization) apply false
   alias(libs.plugins.kotlin.binaryCompatibilityValidator)
   alias(libs.plugins.spotless) apply false
@@ -85,8 +89,26 @@ dependencies {
   kover(projects.arrowEval)
 }
 
-allprojects {
-  group = property("projects.group").toString()
+dependencies {
+  dokka(projects.arrowAnnotations)
+  dokka(projects.arrowAtomic)
+  dokka(projects.arrowAutoclose)
+  dokka(projects.arrowCache4k)
+  dokka(projects.arrowCollectors)
+  dokka(projects.arrowCore)
+  dokka(projects.arrowCoreHighArity)
+  dokka(projects.arrowCoreRetrofit)
+  dokka(projects.arrowCoreSerialization)
+  dokka(projects.arrowEval)
+  dokka(projects.arrowFunctions)
+  dokka(projects.arrowFxCoroutines)
+  dokka(projects.arrowFxStm)
+  dokka(projects.arrowOptics)
+  dokka(projects.arrowOpticsCompose)
+  //dokka(projects.arrowOpticsKspPlugin)
+  dokka(projects.arrowOpticsReflect)
+  dokka(projects.arrowResilience)
+  //dokka(projects.arrowStack)
 }
 
 private val kotlinXUpstream =
@@ -97,50 +119,43 @@ private val kotlinXUpstream =
     "arrow-collectors"
   )
 
-subprojects {
-  tasks.withType<DokkaTaskPartial>().configureEach {
-    extensions.findByType<KotlinProjectExtension>()?.sourceSets?.forEach { kotlinSourceSet ->
-      dokkaSourceSets.named(kotlinSourceSet.name) {
-        perPackageOption {
-          matchingRegex.set(".*\\.internal.*")
-          suppress.set(true)
-        }
-        if (project.name in kotlinXUpstream) externalDocumentationLink("https://kotlinlang.org/api/kotlinx.coroutines/")
-        skipDeprecated.set(true)
-        reportUndocumented.set(false)
+//subprojects {
+//  tasks.withType<DokkaTaskPartial>().configureEach {
+//    extensions.findByType<KotlinProjectExtension>()?.sourceSets?.forEach { kotlinSourceSet ->
+//      dokkaSourceSets.named(kotlinSourceSet.name) {
+//        perPackageOption {
+//          matchingRegex.set(".*\\.internal.*")
+//          suppress.set(true)
+//        }
+//        if (project.name in kotlinXUpstream) externalDocumentationLink("https://kotlinlang.org/api/kotlinx.coroutines/")
+//        skipDeprecated.set(true)
+//        reportUndocumented.set(false)
+//
+//        kotlinSourceSet.kotlin.srcDirs.filter { it.exists() }.forEach { srcDir ->
+//          sourceLink {
+//            localDirectory.set(srcDir)
+//remoteUrl.set(uri("https://github.com/arrow-kt/arrow/blob/main/${srcDir.relativeTo(rootProject.rootDir)}").toURL())
+//            remoteLineSuffix.set("#L")
+//          }
+//        }
+//      }
+//    }
+//  }
+//}
 
-        kotlinSourceSet.kotlin.srcDirs.filter { it.exists() }.forEach { srcDir ->
-          sourceLink {
-            localDirectory.set(srcDir)
-remoteUrl.set(uri("https://github.com/arrow-kt/arrow/blob/main/${srcDir.relativeTo(rootProject.rootDir)}").toURL())
-            remoteLineSuffix.set("#L")
-          }
-        }
-      }
-    }
-  }
+dokka {
+  //dokkaPublicationDirectory.set(file("docs"))
+  moduleName.set("Arrow")
 }
 
-tasks {
-  val undocumentedProjects =
-    listOf(project(":arrow-optics-ksp-plugin"))
+val assembleDocs by tasks.registering(Sync::class) {
+  from(tasks.dokkaGeneratePublicationHtml)
+  from(layout.projectDirectory.dir("static").file("CNAME"))
+  into(layout.projectDirectory.dir("docs"))
+}
 
-  val copyCNameFile = register<Copy>("copyCNameFile") {
-    from(layout.projectDirectory.dir("static").file("CNAME"))
-    into(layout.projectDirectory.dir("docs"))
-  }
-
-  dokkaHtmlMultiModule {
-    dependsOn(copyCNameFile)
-    removeChildTasks(undocumentedProjects)
-  }
-
-  getByName("knitPrepare").dependsOn(getTasksByName("dokka", true))
-
-  withType<DokkaMultiModuleTask>().configureEach {
-    outputDirectory.set(file("docs"))
-    moduleName.set("Arrow")
-  }
+tasks.knitPrepare {
+  dependsOn(tasks.dokkaGenerate)
 }
 
 apiValidation {

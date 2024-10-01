@@ -1,4 +1,6 @@
-@file:Suppress("LocalVariableName")
+@file:Suppress("LocalVariableName", "UnstableApiUsage")
+
+import org.gradle.api.initialization.resolve.RepositoriesMode.PREFER_SETTINGS
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -7,18 +9,23 @@ rootProject.name = "arrow"
 pluginManagement {
   @Suppress("LocalVariableName") val kotlin_repo_url: String? by settings
   repositories {
-    gradlePluginPortal()
     mavenCentral()
-    mavenLocal()
-    kotlin_repo_url?.also { maven(it) }
+    //mavenLocal()
     google()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    gradlePluginPortal()
+    kotlin_repo_url?.also { maven(it) { name = "KotlinRepo" } }
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") {
+      name = "JetBrains Compose Dev"
+    }
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev") {
+      name = "JetBrains Dokka Dev"
+    }
   }
 }
 
 plugins {
   id("com.gradle.develocity") version "3.18.1"
-  id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
+  id("org.gradle.toolchains.foojay-resolver-convention") version ("0.8.0")
 }
 
 val kotlin_repo_url: String? by settings
@@ -27,11 +34,16 @@ val ksp_version: String? by settings
 val compose_version: String? by settings
 
 dependencyResolutionManagement {
+  repositoriesMode = PREFER_SETTINGS
   repositories {
     mavenCentral()
+    //mavenLocal()
+    google()
     gradlePluginPortal()
-    mavenLocal()
-    kotlin_repo_url?.also { maven(it) }
+    kotlin_repo_url?.also { maven(it) { name = "KotlinRepo" } }
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev") {
+      name = "JetBrains Dokka Dev"
+    }
   }
   versionCatalogs {
     create("libs") {

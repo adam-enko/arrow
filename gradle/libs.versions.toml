@@ -3,7 +3,7 @@ animalSniffer = "1.7.1"
 arrowGradleConfig = "0.12.0-rc.24"
 coroutines = "1.9.0"
 classgraph = "4.8.176"
-dokka = "1.9.20"
+dokka = "2.0.20-dev-362"
 kotest = "5.9.1"
 kover = "0.8.3"
 kotlin = "2.0.20"
@@ -21,7 +21,7 @@ composePlugin = "1.6.11"
 agp = "8.6.1"
 android-compileSdk = "34"
 cache4k = "0.13.0"
-publish="0.29.0"
+publish = "0.29.0"
 
 [libraries]
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -48,15 +48,19 @@ kotlinCompileTesting = { module = "dev.zacsweers.kctfork:core", version.ref = "k
 kotlinCompileTestingKsp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kotlinCompileTesting" }
 cache4k = { module = "io.github.reactivecircus.cache4k:cache4k", version.ref = "cache4k" }
 
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+android-library-gradlePlugin = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "agp"}
+
 [plugins]
 animalSniffer = { id = "ru.vyarus.animalsniffer", version.ref = "animalSniffer" }
 arrowGradleConfig-formatter = { id = "io.arrow-kt.arrow-gradle-config-formatter", version.ref = "arrowGradleConfig" }
 arrowGradleConfig-kotlin = { id = "io.arrow-kt.arrow-gradle-config-kotlin", version.ref = "arrowGradleConfig" }
 arrowGradleConfig-publish = { id = "io.arrow-kt.arrow-gradle-config-publish", version.ref = "arrowGradleConfig" }
-publish = { id = "com.vanniktech.maven.publish", version.ref="publish" }
+publish = { id = "com.vanniktech.maven.publish", version.ref = "publish" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform" }
+#kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinBinaryCompatibilityValidator" }
 kotlinx-knit = { id = "org.jetbrains.kotlinx.knit", version.ref = "knit" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
@@ -65,4 +69,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessVersion" }
 compose-jetbrains = { id = "org.jetbrains.compose", version.ref = "composePlugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-android-library = { id = "com.android.library", version.ref = "agp" }
+android-library = { id = "com.android.library" }
