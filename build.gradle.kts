@@ -20,6 +20,7 @@ buildscript {
     mavenCentral()
     google()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev")
   }
 
   dependencies {
@@ -33,7 +34,12 @@ allprojects {
     (project.rootProject.properties["kotlin_repo_url"] as? String)?.also { maven(it) }
     google()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev")
   }
+}
+
+allprojects {
+  group = property("projects.group").toString()
 }
 
 plugins {
@@ -85,8 +91,24 @@ dependencies {
   kover(projects.arrowEval)
 }
 
-allprojects {
-  group = property("projects.group").toString()
+dependencies {
+  dokka(projects.arrowAnnotations)
+  dokka(projects.arrowAtomic)
+  dokka(projects.arrowAutoclose)
+  dokka(projects.arrowCore)
+  dokka(projects.arrowCoreHighArity)
+  dokka(projects.arrowCoreRetrofit)
+  dokka(projects.arrowCoreSerialization)
+  dokka(projects.arrowCache4k)
+  dokka(projects.arrowFunctions)
+  dokka(projects.arrowFxCoroutines)
+  dokka(projects.arrowFxStm)
+  dokka(projects.arrowOptics)
+  dokka(projects.arrowOpticsReflect)
+  dokka(projects.arrowOpticsCompose)
+  dokka(projects.arrowResilience)
+  dokka(projects.arrowCollectors)
+  dokka(projects.arrowEval)
 }
 
 private val kotlinXUpstream =
@@ -121,26 +143,22 @@ remoteUrl.set(uri("https://github.com/arrow-kt/arrow/blob/main/${srcDir.relative
   }
 }
 
-tasks {
-  val undocumentedProjects =
-    listOf(project(":arrow-optics-ksp-plugin"))
+dokka {
+  dokkaPublicationDirectory.set(file("docs"))
+  moduleName.set("Arrow")
+}
 
-  val copyCNameFile = register<Copy>("copyCNameFile") {
-    from(layout.projectDirectory.dir("static").file("CNAME"))
-    into(layout.projectDirectory.dir("docs"))
-  }
+val copyCNameFile = tasks.register<Copy>("copyCNameFile") {
+  from(layout.projectDirectory.dir("static").file("CNAME"))
+  into(layout.projectDirectory.dir("docs"))
+}
 
-  dokkaHtmlMultiModule {
-    dependsOn(copyCNameFile)
-    removeChildTasks(undocumentedProjects)
-  }
+tasks.dokkaGenerate {
+  dependsOn(copyCNameFile)
+}
 
-  getByName("knitPrepare").dependsOn(getTasksByName("dokka", true))
-
-  withType<DokkaMultiModuleTask>().configureEach {
-    outputDirectory.set(file("docs"))
-    moduleName.set("Arrow")
-  }
+tasks.getByName("knitPrepare") {
+  dependsOn(tasks.dokkaGenerate, true)
 }
 
 apiValidation {

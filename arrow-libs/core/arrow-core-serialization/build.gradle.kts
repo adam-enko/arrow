@@ -7,9 +7,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 plugins {
   id(libs.plugins.kotlin.multiplatform.get().pluginId)
   alias(libs.plugins.arrowGradleConfig.kotlin)
-
   alias(libs.plugins.kotlinx.kover)
   alias(libs.plugins.spotless)
+  // alias(libs.plugins.dokka)
   id(libs.plugins.kotlinx.serialization.get().pluginId)
 }
 

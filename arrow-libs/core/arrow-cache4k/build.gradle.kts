@@ -9,6 +9,7 @@ plugins {
   id(libs.plugins.kotlin.multiplatform.get().pluginId)
   alias(libs.plugins.publish)
   alias(libs.plugins.spotless)
+  // alias(libs.plugins.dokka)
 }
 
 apply(from = property("ANIMALSNIFFER_MPP"))
