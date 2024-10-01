@@ -1,9 +1,7 @@
-@file:Suppress("DSL_SCOPE_VIOLATION")
-
 plugins {
   `java-platform`
   alias(libs.plugins.publish)
-  
+
 }
 
 group = property("projects.group").toString()

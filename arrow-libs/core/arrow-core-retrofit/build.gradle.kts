@@ -1,5 +1,3 @@
-@file:Suppress("DSL_SCOPE_VIOLATION")
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
@@ -11,7 +9,7 @@ plugins {
   alias(libs.plugins.kotlinx.serialization) // Needed for testing only
   alias(libs.plugins.kotlinx.kover)
   alias(libs.plugins.spotless)
-  // alias(libs.plugins.dokka)
+  `dokka-convention`
 }
 
 spotless {

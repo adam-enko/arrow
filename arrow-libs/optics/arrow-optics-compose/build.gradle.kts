@@ -1,25 +1,23 @@
-@file:Suppress("DSL_SCOPE_VIOLATION")
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 
-repositories {
-  google()
-  mavenCentral()
-  maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-}
+//repositories {
+//  google()
+//  mavenCentral()
+//  maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+//}
 
 plugins {
-  id(libs.plugins.kotlin.multiplatform.get().pluginId)
+  alias(libs.plugins.kotlin.multiplatform)
   // alias(libs.plugins.arrowGradleConfig.kotlin)
   alias(libs.plugins.publish)
   alias(libs.plugins.spotless)
   alias(libs.plugins.compose.jetbrains)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.android.library)
-  // alias(libs.plugins.dokka)
+  `dokka-convention`
 }
 
 apply(from = property("ANIMALSNIFFER_MPP"))

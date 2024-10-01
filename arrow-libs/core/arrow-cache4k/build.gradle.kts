@@ -1,15 +1,12 @@
-@file:Suppress("DSL_SCOPE_VIOLATION")
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
-
 plugins {
   // `java-library`
-  id(libs.plugins.kotlin.multiplatform.get().pluginId)
+  alias(libs.plugins.kotlin.multiplatform)
   alias(libs.plugins.publish)
   alias(libs.plugins.spotless)
-  // alias(libs.plugins.dokka)
+  `dokka-convention`
 }
 
 apply(from = property("ANIMALSNIFFER_MPP"))

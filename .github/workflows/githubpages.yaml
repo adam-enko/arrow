@@ -29,7 +29,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/arrow-2' }}
 
       - name: assemble
-        run: ./gradlew -Pversion=${{ github.event.release.tag_name }} dokkaHtmlMultiModule -Pgithubpages=true
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name }} :assembleDocs -Pgithubpages=true
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
